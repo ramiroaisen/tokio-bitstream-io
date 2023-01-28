@@ -12,7 +12,7 @@ edition = "2018"
 
 [dependencies]
 async-trait = "0.1.63"
-tokio = { version = "1", features = ["io-std", "io-util"] }
+tokio = "1"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["full"] }
