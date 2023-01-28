@@ -11,4 +11,4 @@ around any stream which implements the tokio `AsyncRead` or `AsyncWrite` traits.
 It also supports a wide array of integer data types as
 containers for those binary values.
 
-[Documentation](https://docs.rs/tokio-bitstream-io/latest/tokio_bitstream_io/)
+[Documentation](https://docs.rs/tokio-bitstream-io/)
