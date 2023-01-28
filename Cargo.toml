@@ -1,0 +1,21 @@
+[package]
+name = "tokio-bitstream-io"
+description = "Tokio port of bitstream-io: Library for reading/writing un-aligned values from/to streams in big-endian and little-endian formats."
+keywords = ["bitstream", "tokio", "async", "endian", "big-endian", "little-endian", "binary"]
+version = "0.0.1"
+authors = ["Ramiro Aisen <ramiroaisen@gmail.com>"]
+license = "MIT/Apache-2.0"
+documentation = "https://docs.rs/tokio-bitstream-io/"
+homepage = "https://github.com/ramiroaisen/tokio-bitstream-io"
+repository = "https://github.com/ramiroaisen/tokio-bitstream-io"
+edition = "2018"
+
+[lib]
+doctest = false
+
+[dependencies]
+async-trait = "0.1.63"
+tokio = { version = "1", features = ["io-std", "io-util"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
