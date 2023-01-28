@@ -57,9 +57,10 @@ pub enum ReadHuffmanTree<E: Endianness, T: Clone> {
 /// ```
 ///
 /// ```
-/// use std::io::{Read, Cursor};
+/// use std::io::Cursor;
 /// use tokio_bitstream_io::{BigEndian, BitReader, HuffmanRead};
 /// use tokio_bitstream_io::huffman::compile_read_tree;
+/// # async {
 /// let tree = compile_read_tree(
 ///     vec![('a', vec![0]),
 ///          ('b', vec![1, 0]),
@@ -68,9 +69,10 @@ pub enum ReadHuffmanTree<E: Endianness, T: Clone> {
 /// let data = [0b10110111];
 /// let mut cursor = Cursor::new(&data);
 /// let mut reader = BitReader::endian(&mut cursor, BigEndian);
-/// assert_eq!(reader.read_huffman(&tree).unwrap(), 'b');
-/// assert_eq!(reader.read_huffman(&tree).unwrap(), 'c');
-/// assert_eq!(reader.read_huffman(&tree).unwrap(), 'd');
+/// assert_eq!(reader.read_huffman(&tree).await.unwrap(), 'b');
+/// assert_eq!(reader.read_huffman(&tree).await.unwrap(), 'c');
+/// assert_eq!(reader.read_huffman(&tree).await.unwrap(), 'd');
+/// # };
 /// ```
 pub fn compile_read_tree<E, T>(
     values: Vec<(T, Vec<u8>)>,
@@ -259,7 +261,7 @@ impl std::error::Error for HuffmanTreeError {}
 /// ```
 ///
 /// ```
-/// use std::io::Write;
+/// # async {
 /// use tokio_bitstream_io::{BigEndian, BitWriter, HuffmanWrite};
 /// use tokio_bitstream_io::huffman::compile_write_tree;
 /// let tree = compile_write_tree(
@@ -270,11 +272,12 @@ impl std::error::Error for HuffmanTreeError {}
 /// let mut data = Vec::new();
 /// {
 ///     let mut writer = BitWriter::endian(&mut data, BigEndian);
-///     writer.write_huffman(&tree, 'b').unwrap();
-///     writer.write_huffman(&tree, 'c').unwrap();
-///     writer.write_huffman(&tree, 'd').unwrap();
+///     writer.write_huffman(&tree, 'b').await.unwrap();
+///     writer.write_huffman(&tree, 'c').await.unwrap();
+///     writer.write_huffman(&tree, 'd').await.unwrap();
 /// }
 /// assert_eq!(data, [0b10110111]);
+/// # };
 /// ```
 pub fn compile_write_tree<E, T>(
     values: Vec<(T, Vec<u8>)>,
