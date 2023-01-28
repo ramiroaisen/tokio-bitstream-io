@@ -620,34 +620,42 @@ async fn test_reader_bits_errors() {
     );
 }
 
-// TODO: enable this test 
-// #[tokio::test]
-// async fn test_clone() {
-//     use tokio_bitstream_io::{BigEndian, BitRead, BitReader};
+#[tokio::test]
+async fn test_clone() {
+    use tokio_bitstream_io::{BigEndian, BitRead, BitReader};
 
-//     // Reading unsigned examples, cloning while unaligned.
-//     let actual_data: [u8; 4] = [0xB1, 0xED, 0x3B, 0xC1];
-//     let mut r = BitReader::endian(Cursor::new(&actual_data), BigEndian);
-//     assert!(r.byte_aligned());
-//     assert_eq!(r.read::<u32>(4).await.unwrap(), 0xB);
-//     let mut r2 = r.clone();
-//     assert!(!r.byte_aligned());
-//     assert_eq!(r.read::<u32>(4).await.unwrap(), 0x1);
-//     assert_eq!(r.read::<u32>(8).await.unwrap(), 0xED);
-//     assert!(!r2.byte_aligned());
-//     assert_eq!(r2.read::<u32>(4).await.unwrap(), 0x1);
-//     assert_eq!(r2.read::<u32>(8).await.unwrap(), 0xED);
+    // Reading unsigned examples, cloning while unaligned.
+    let actual_data: [u8; 4] = [0xB1, 0xED, 0x3B, 0xC1];
+    let mut r = BitReader::endian(Cursor::new(&actual_data), BigEndian);
+    assert!(r.byte_aligned());
+    assert_eq!(r.read::<u32>(4).await.unwrap(), 0xB);
+    let mut r2 = r.clone();
+    assert!(!r.byte_aligned());
+    assert_eq!(r.read::<u32>(4).await.unwrap(), 0x1);
+    assert_eq!(r.read::<u32>(8).await.unwrap(), 0xED);
+    assert!(!r2.byte_aligned());
+    assert_eq!(r2.read::<u32>(4).await.unwrap(), 0x1);
+    assert_eq!(r2.read::<u32>(8).await.unwrap(), 0xED);
 
-//     // Can still instantiate a BitReader when the backing std::io::Read is
-//     // !Clone.
-//     struct NotCloneRead<'a>(&'a [u8]);
-//     impl<'a> std::io::Read for NotCloneRead<'a> {
-//         fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-//             self.0.read(buf)
-//         }
-//     }
-//     let _r = BitReader::endian(NotCloneRead(&actual_data[..]), BigEndian);
-// }
+    // Can still instantiate a BitReader when the backing std::io::Read is
+    // !Clone.
+    use tokio::io::AsyncRead;
+    struct NotCloneRead<'a>(&'a [u8]);
+    impl<'a> AsyncRead for NotCloneRead<'a> {
+        fn poll_read(
+                mut self: std::pin::Pin<&mut Self>,
+                cx: &mut std::task::Context<'_>,
+                buf: &mut tokio::io::ReadBuf<'_>,
+            ) -> std::task::Poll<std::io::Result<()>> {
+                std::pin::Pin::new(&mut self.0).poll_read(cx, buf)
+            }
+        }
+        // fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+        //     self.0.read(buf)
+        // }
+            
+    let _r = BitReader::endian(NotCloneRead(&actual_data[..]), BigEndian);
+}
 
 #[tokio::test]
 async fn test_read_bytes() {
