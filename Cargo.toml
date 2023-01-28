@@ -10,9 +10,6 @@ homepage = "https://github.com/ramiroaisen/tokio-bitstream-io"
 repository = "https://github.com/ramiroaisen/tokio-bitstream-io"
 edition = "2018"
 
-[lib]
-# doctest = false
-
 [dependencies]
 async-trait = "0.1.63"
 tokio = { version = "1", features = ["io-std", "io-util"] }
