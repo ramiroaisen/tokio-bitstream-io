@@ -6,7 +6,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! Port of bitstream_io for usage with tokio runtime
+//! Port of [bitstream_io](https://docs.rs/bitstream-io/latest) for usage with tokio runtime
+//!
 //! Traits and helpers for async bitstream handling functionality
 //!
 //! Async Bitstream readers are for reading signed and unsigned integer
@@ -29,7 +30,7 @@
 //! types of any possible size.
 //! Many of Rust's built-in integer types are supported by default.
 //!
-//! Traits are implemented with [macro@async_trait] macro that is re-exported from this library
+//! Traits are implemented with [async_trait](https://docs.rs/async_trait/latest) macro that is re-exported from this library
 
 #![warn(missing_docs)]
 #![forbid(unsafe_code)]
