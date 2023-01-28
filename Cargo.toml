@@ -2,7 +2,7 @@
 name = "tokio-bitstream-io"
 description = "Tokio port of bitstream-io: Library for reading/writing un-aligned values from/to streams in big-endian and little-endian formats."
 keywords = ["bitstream", "tokio", "async", "endian", "binary"]
-version = "0.0.4"
+version = "0.0.5"
 authors = ["Ramiro Aisen <ramiroaisen@gmail.com>"]
 license = "MIT/Apache-2.0"
 documentation = "https://docs.rs/tokio-bitstream-io/"
