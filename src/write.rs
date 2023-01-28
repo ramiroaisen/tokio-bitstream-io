@@ -98,7 +98,7 @@
 //! }
 //!
 //! 
-//! # async {
+//! # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
 //! 
 //! let mut flac: Vec<u8> = Vec::new();
 //!
@@ -166,7 +166,7 @@
 //!                      0x73,0x73,0x6f,0x72,0x74,0x65,0x64,0x0d,
 //!                      0x00,0x00,0x00,0x74,0x72,0x61,0x63,0x6b,
 //!                      0x6e,0x75,0x6d,0x62,0x65,0x72,0x3d,0x31]);
-//! # }; 
+//! # }); 
 //! ```
 
 #![warn(missing_docs)]
@@ -259,7 +259,7 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWriter<W, E> {
     /// use std::io::Write;
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
     /// 
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// let mut data = Vec::new();
     /// let (bits, value) = {
     ///     let mut writer = BitWriter::endian(&mut data, BigEndian);
@@ -269,11 +269,11 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWriter<W, E> {
     /// assert_eq!(data, [0b1010_0101]);
     /// assert_eq!(bits, 7);
     /// assert_eq!(value, 0b0101_101);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
     /// let mut data = Vec::new();
     /// let (bits, value) = {
@@ -284,7 +284,7 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWriter<W, E> {
     /// assert_eq!(data, [0b1010_0101]);
     /// assert_eq!(bits, 0);
     /// assert_eq!(value, 0);
-    /// # };
+    /// # });
     /// ```
     #[inline(always)]
     pub fn into_unwritten(self) -> (u32, u8) {
@@ -352,7 +352,7 @@ pub trait BitWrite: Send + Sync {
     /// # Example
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Write;
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), BigEndian);
@@ -361,7 +361,7 @@ pub trait BitWrite: Send + Sync {
     /// writer.write(8, 0x6F).await.unwrap();
     /// writer.write_bytes(b"bar").await.unwrap();
     /// assert_eq!(writer.into_writer(), b"foobar");
-    /// # };
+    /// # });
     /// ```
     #[inline]
     async fn write_bytes(&mut self, buf: &[u8]) -> io::Result<()> {
@@ -382,25 +382,25 @@ pub trait BitWrite: Send + Sync {
     ///
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), BigEndian);
     /// writer.write_unary0(0).await.unwrap();
     /// writer.write_unary0(3).await.unwrap();
     /// writer.write_unary0(10).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b01110111, 0b11111110]);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{LittleEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), LittleEndian);
     /// writer.write_unary0(0).await.unwrap();
     /// writer.write_unary0(3).await.unwrap();
     /// writer.write_unary0(10).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b11101110, 0b01111111]);
-    /// # };
+    /// # });
     /// ```
     async fn write_unary0(&mut self, value: u32) -> io::Result<()> {
         match value {
@@ -450,25 +450,25 @@ pub trait BitWrite: Send + Sync {
     ///
     /// # Example
     /// ```
-    /// # async { 
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async { 
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), BigEndian);
     /// writer.write_unary1(0).await.unwrap();
     /// writer.write_unary1(3).await.unwrap();
     /// writer.write_unary1(10).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b10001000, 0b00000001]);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{LittleEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), LittleEndian);
     /// writer.write_unary1(0).await.unwrap();
     /// writer.write_unary1(3).await.unwrap();
     /// writer.write_unary1(10).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b00010001, 0b10000000]);
-    /// # };
+    /// # });
     /// ```
     async fn write_unary1(&mut self, value: u32) -> io::Result<()> {
         match value {
@@ -508,7 +508,7 @@ pub trait BitWrite: Send + Sync {
     ///
     /// # Example
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Write;
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), BigEndian);
@@ -516,7 +516,7 @@ pub trait BitWrite: Send + Sync {
     /// writer.byte_align().await.unwrap();
     /// writer.write(8, 0xFF).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0x00, 0xFF]);
-    /// # };
+    /// # });
     /// ```
     async fn byte_align(&mut self) -> io::Result<()> {
         while !self.byte_aligned() {
@@ -545,7 +545,7 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWrite for BitWriter<
     /// # Examples
     /// ```
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// let mut writer = BitWriter::endian(Vec::new(), BigEndian);
     /// writer.write_bit(true).await.unwrap();
     /// writer.write_bit(false).await.unwrap();
@@ -556,11 +556,11 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWrite for BitWriter<
     /// writer.write_bit(true).await.unwrap();
     /// writer.write_bit(true).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b10110111]);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{LittleEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), LittleEndian);
     /// writer.write_bit(true).await.unwrap();
@@ -572,7 +572,7 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWrite for BitWriter<
     /// writer.write_bit(false).await.unwrap();
     /// writer.write_bit(true).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b10110111]);
-    /// # };
+    /// # });
     /// ```
     async fn write_bit(&mut self, bit: bool) -> io::Result<()> {
         self.bitqueue.push(1, u8::from(bit));
@@ -585,29 +585,29 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWrite for BitWriter<
 
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), BigEndian);
     /// writer.write(1, 0b1).await.unwrap();
     /// writer.write(2, 0b01).await.unwrap();
     /// writer.write(5, 0b10111).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b10110111]);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{LittleEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), LittleEndian);
     /// writer.write(1, 0b1).await.unwrap();
     /// writer.write(2, 0b11).await.unwrap();
     /// writer.write(5, 0b10110).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b10110111]);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio::io::sink;
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
     /// let mut w = BitWriter::endian(sink(), BigEndian);
@@ -619,7 +619,7 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWrite for BitWriter<
     /// assert!(w.write(2, 4).await.is_err());      // can't write   4 in 2 bits
     /// assert!(w.write(3, 8).await.is_err());      // can't write   8 in 3 bits
     /// assert!(w.write(4, 16).await.is_err());     // can't write  16 in 4 bits
-    /// # };
+    /// # });
     /// ```
     async fn write<U>(&mut self, bits: u32, value: U) -> io::Result<()>
     where
@@ -649,23 +649,23 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWrite for BitWriter<
 
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), BigEndian);
     /// writer.write_signed(4, -5).await.unwrap();
     /// writer.write_signed(4, 7).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b10110111]);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{LittleEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(Vec::new(), LittleEndian);
     /// writer.write_signed(4, 7).await.unwrap();
     /// writer.write_signed(4, -5).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b10110111]);
-    /// # };
+    /// # });
     /// ```
     #[inline]
     async fn write_signed<S>(&mut self, bits: u32, value: S) -> io::Result<()>
@@ -690,7 +690,7 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWrite for BitWriter<
 
     /// # Example
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio::io::sink;
     /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite};
     /// let mut writer = BitWriter::endian(sink(), BigEndian);
@@ -699,7 +699,7 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWrite for BitWriter<
     /// assert_eq!(writer.byte_aligned(), false);
     /// writer.write(7, 0).await.unwrap();
     /// assert_eq!(writer.byte_aligned(), true);
-    /// # };
+    /// # });
     /// ```
     #[inline(always)]
     fn byte_aligned(&self) -> bool {
@@ -711,7 +711,7 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWrite for BitWriter<
 impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> HuffmanWrite<E> for BitWriter<W, E> {
     /// # Example
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{BigEndian, BitWriter, HuffmanWrite};
     /// use tokio_bitstream_io::huffman::compile_write_tree;
     /// 
@@ -724,7 +724,7 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> HuffmanWrite<E> for Bit
     /// writer.write_huffman(&tree, 'b').await.unwrap();
     /// writer.write_huffman(&tree, 'c').await.unwrap();
     /// writer.write_huffman(&tree, 'd').await.unwrap();
-    /// # };
+    /// # });
     /// ```
     #[inline]
     async fn write_huffman<T>(&mut self, tree: &WriteHuffmanTree<E, T>, symbol: T) -> io::Result<()>
@@ -744,14 +744,14 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> HuffmanWrite<E> for Bit
 ///
 /// # Example
 /// ```
-/// # async {
+/// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
 /// use tokio_bitstream_io::{BigEndian, BitWrite, BitCounter};
 /// let mut writer: BitCounter<u32, BigEndian> = BitCounter::new();
 /// writer.write(1, 0b1).await.unwrap();
 /// writer.write(2, 0b01).await.unwrap();
 /// writer.write(5, 0b10111).await.unwrap();
 /// assert_eq!(writer.written(), 8);
-/// # };
+/// # });
 /// ```
 #[derive(Default)]
 pub struct BitCounter<N, E: Endianness> {
@@ -971,7 +971,7 @@ impl WriteRecord {
 /// For recording writes in order to play them back on another writer
 /// # Example
 /// ```
-/// # async {
+/// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
 /// use tokio_bitstream_io::{BigEndian, BitWriter, BitWrite, BitRecorder};
 /// let mut recorder: BitRecorder<u32, BigEndian> = BitRecorder::new();
 /// recorder.write(1, 0b1).await.unwrap();
@@ -981,7 +981,7 @@ impl WriteRecord {
 /// let mut writer = BitWriter::endian(Vec::new(), BigEndian);
 /// recorder.playback(&mut writer).await.unwrap();
 /// assert_eq!(writer.into_writer(), [0b10110111]);
-/// };
+/// # });
 /// ```
 #[derive(Default)]
 pub struct BitRecorder<N, E: Endianness> {
@@ -1236,21 +1236,21 @@ pub trait ByteWrite {
     /// Passes along any I/O error from the underlying stream.
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{BigEndian, ByteWriter, ByteWrite};
     /// let mut writer = ByteWriter::endian(Vec::new(), BigEndian);
     /// writer.write(0b0000000011111111u16).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b00000000, 0b11111111]);
-    /// };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use tokio_bitstream_io::{LittleEndian, ByteWriter, ByteWrite};
     /// let mut writer = ByteWriter::endian(Vec::new(), LittleEndian);
     /// writer.write(0b0000000011111111u16).await.unwrap();
     /// assert_eq!(writer.into_writer(), [0b11111111, 0b00000000]);
-    /// # };
+    /// # });
     /// ```
     async fn write<N: Numeric>(&mut self, value: N) -> io::Result<()>;
 

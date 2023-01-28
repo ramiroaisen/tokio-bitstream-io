@@ -121,7 +121,7 @@
 //!
 //! let mut reader = BitReader::endian(&mut cursor, BigEndian);
 //!
-//! # async {
+//! # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
 //! // stream marker
 //! assert_eq!(&reader.read_to_bytes().await.unwrap(), b"fLaC");
 //!
@@ -166,7 +166,7 @@
 //!        ],
 //!    }
 //! );
-//! # };
+//! # });
 
 #![warn(missing_docs)]
 
@@ -399,7 +399,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitReader<R, E> {
     ///
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0b1010_0101, 0b0101_1010];
@@ -408,11 +408,11 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitReader<R, E> {
     /// let (bits, value) = reader.into_unread();
     /// assert_eq!(bits, 7);
     /// assert_eq!(value, 0b101_1010);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0b1010_0101, 0b0101_1010];
@@ -421,7 +421,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitReader<R, E> {
     /// let (bits, value) = reader.into_unread();
     /// assert_eq!(bits, 0);
     /// assert_eq!(value, 0);
-    /// # };
+    /// # });
     /// ```
     #[inline]
     pub fn into_unread(self) -> (u32, u8) {
@@ -434,7 +434,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// # Examples
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0b10110111];
@@ -447,11 +447,11 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert_eq!(reader.read_bit().await.unwrap(), true);
     /// assert_eq!(reader.read_bit().await.unwrap(), true);
     /// assert_eq!(reader.read_bit().await.unwrap(), true);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{LittleEndian, BitReader, BitRead};
     /// let data = [0b10110111];
@@ -464,7 +464,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert_eq!(reader.read_bit().await.unwrap(), true);
     /// assert_eq!(reader.read_bit().await.unwrap(), false);
     /// assert_eq!(reader.read_bit().await.unwrap(), true);
-    /// # };
+    /// # });
     /// ```
     #[inline(always)]
     async fn read_bit(&mut self) -> io::Result<bool> {
@@ -476,7 +476,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
 
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0b10110111];
@@ -484,11 +484,11 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert_eq!(reader.read::<u8>(1).await.unwrap(), 0b1);
     /// assert_eq!(reader.read::<u8>(2).await.unwrap(), 0b01);
     /// assert_eq!(reader.read::<u8>(5).await.unwrap(), 0b10111);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{LittleEndian, BitReader, BitRead};
     /// let data = [0b10110111];
@@ -496,11 +496,11 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert_eq!(reader.read::<u8>(1).await.unwrap(), 0b1);
     /// assert_eq!(reader.read::<u8>(2).await.unwrap(), 0b11);
     /// assert_eq!(reader.read::<u8>(5).await.unwrap(), 0b10110);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0;10];
@@ -509,7 +509,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert!(reader.read::<u16>(17).await.is_err());  // can't read 17 bits to u16
     /// assert!(reader.read::<u32>(33).await.is_err());  // can't read 33 bits to u32
     /// assert!(reader.read::<u64>(65).await.is_err());  // can't read 65 bits to u64
-    /// # };
+    /// # });
     /// ```
     async fn read<U>(&mut self, mut bits: u32) -> io::Result<U>
     where
@@ -538,29 +538,29 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
 
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0b10110111];
     /// let mut reader = BitReader::endian(Cursor::new(&data), BigEndian);
     /// assert_eq!(reader.read_signed::<i8>(4).await.unwrap(), -5);
     /// assert_eq!(reader.read_signed::<i8>(4).await.unwrap(), 7);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{LittleEndian, BitReader, BitRead};
     /// let data = [0b10110111];
     /// let mut reader = BitReader::endian(Cursor::new(&data), LittleEndian);
     /// assert_eq!(reader.read_signed::<i8>(4).await.unwrap(), 7);
     /// assert_eq!(reader.read_signed::<i8>(4).await.unwrap(), -5);
-    /// # }; 
+    /// # }); 
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0;10];
@@ -569,7 +569,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert!(r.read_signed::<i16>(17).await.is_err()); // can't read 17 bits to i16
     /// assert!(r.read_signed::<i32>(33).await.is_err()); // can't read 33 bits to i32
     /// assert!(r.read_signed::<i64>(65).await.is_err()); // can't read 65 bits to i64
-    /// # };
+    /// # });
     /// ```
     #[inline]
     async fn read_signed<S>(&mut self, bits: u32) -> io::Result<S>
@@ -581,25 +581,25 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
 
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0b10110111];
     /// let mut reader = BitReader::endian(Cursor::new(&data), BigEndian);
     /// assert!(reader.skip(3).await.is_ok());
     /// assert_eq!(reader.read::<u8>(5).await.unwrap(), 0b10111);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{LittleEndian, BitReader, BitRead};
     /// let data = [0b10110111];
     /// let mut reader = BitReader::endian(Cursor::new(&data), LittleEndian);
     /// assert!(reader.skip(3).await.is_ok());
     /// assert_eq!(reader.read::<u8>(5).await.unwrap(), 0b10110);
-    /// # };
+    /// # });
     /// ```
     async fn skip(&mut self, mut bits: u32) -> io::Result<()> {
         use std::cmp::min;
@@ -616,7 +616,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
 
     /// # Example
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = b"foobar";
@@ -625,7 +625,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// let mut buf = [0;3];
     /// assert!(reader.read_bytes(&mut buf).await.is_ok());
     /// assert_eq!(&buf, b"bar");
-    /// # };
+    /// # });
     /// ```
     async fn read_bytes(&mut self, buf: &mut [u8]) -> io::Result<()> {
         if self.byte_aligned() {
@@ -641,7 +641,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
 
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0b01110111, 0b11111110];
@@ -649,11 +649,11 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert_eq!(reader.read_unary0().await.unwrap(), 0);
     /// assert_eq!(reader.read_unary0().await.unwrap(), 3);
     /// assert_eq!(reader.read_unary0().await.unwrap(), 10);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{LittleEndian, BitReader, BitRead};
     /// let data = [0b11101110, 0b01111111];
@@ -661,7 +661,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert_eq!(reader.read_unary0().await.unwrap(), 0);
     /// assert_eq!(reader.read_unary0().await.unwrap(), 3);
     /// assert_eq!(reader.read_unary0().await.unwrap(), 10);
-    /// # };
+    /// # });
     /// ```
     async fn read_unary0(&mut self) -> io::Result<u32> {
         if self.bitqueue.is_empty() {
@@ -679,7 +679,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
 
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0b10001000, 0b00000001];
@@ -687,11 +687,11 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert_eq!(reader.read_unary1().await.unwrap(), 0);
     /// assert_eq!(reader.read_unary1().await.unwrap(), 3);
     /// assert_eq!(reader.read_unary1().await.unwrap(), 10);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{LittleEndian, BitReader, BitRead};
     /// let data = [0b00010001, 0b10000000];
@@ -699,7 +699,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert_eq!(reader.read_unary1().await.unwrap(), 0);
     /// assert_eq!(reader.read_unary1().await.unwrap(), 3);
     /// assert_eq!(reader.read_unary1().await.unwrap(), 10);
-    /// # };
+    /// # });
     /// ```
     async fn read_unary1(&mut self) -> io::Result<u32> {
         if self.bitqueue.is_empty() {
@@ -717,7 +717,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
 
     /// # Example
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0];
@@ -727,7 +727,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert_eq!(reader.byte_aligned(), false);
     /// assert!(reader.skip(7).await.is_ok());
     /// assert_eq!(reader.byte_aligned(), true);
-    /// # };
+    /// # });
     /// ```
     #[inline]
     fn byte_aligned(&self) -> bool {
@@ -736,7 +736,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
 
     /// # Example
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0x00, 0xFF];
@@ -744,7 +744,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> BitRead for BitReader<R,
     /// assert_eq!(reader.read::<u8>(4).await.unwrap(), 0);
     /// reader.byte_align();
     /// assert_eq!(reader.read::<u8>(8).await.unwrap(), 0xFF);
-    /// # };
+    /// # });
     /// ```
     #[inline]
     fn byte_align(&mut self) {
@@ -759,7 +759,7 @@ where
 {
     /// # Example
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::{Cursor, SeekFrom};
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
     /// let data = [0x00, 0xFF];
@@ -774,7 +774,7 @@ where
     ///
     /// let pos = reader.seek_bits(SeekFrom::End(5)).await.unwrap();
     /// assert!(pos == 11 && 11 == reader.position_in_bits().await.unwrap());
-    /// # };
+    /// # });
     /// ```
     pub async fn seek_bits(&mut self, from: io::SeekFrom) -> io::Result<u64> {
         let mut from = from;
@@ -808,7 +808,7 @@ where
 
     /// # Example
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::fs::read;
     /// use std::io::{Cursor, SeekFrom};
     /// use tokio_bitstream_io::{BigEndian, BitReader, BitRead};
@@ -821,7 +821,7 @@ where
     ///
     /// reader.read_bit().await.unwrap();
     /// assert_eq!(reader.position_in_bits().await.unwrap(), 6);
-    /// # };
+    /// # });
     /// ```
     #[inline]
     pub async fn position_in_bits(&mut self) -> io::Result<u64> {
@@ -834,7 +834,7 @@ where
 impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> HuffmanRead<E> for BitReader<R, E> {
     /// # Example
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, BitReader, HuffmanRead};
     /// use tokio_bitstream_io::huffman::compile_read_tree;
@@ -848,7 +848,7 @@ impl<R: AsyncRead + Unpin + Send + Sync, E: Endianness> HuffmanRead<E> for BitRe
     /// assert_eq!(reader.read_huffman(&tree).await.unwrap(), 'b');
     /// assert_eq!(reader.read_huffman(&tree).await.unwrap(), 'c');
     /// assert_eq!(reader.read_huffman(&tree).await.unwrap(), 'd');
-    /// # };
+    /// # });
     /// ```
     async fn read_huffman<T>(&mut self, tree: &[ReadHuffmanTree<E, T>]) -> io::Result<T>
     where
@@ -981,23 +981,23 @@ pub trait ByteRead {
     ///
     /// # Examples
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{BigEndian, ByteReader, ByteRead};
     /// let data = [0b00000000, 0b11111111];
     /// let mut reader = ByteReader::endian(Cursor::new(&data), BigEndian);
     /// assert_eq!(reader.read::<u16>().await.unwrap(), 0b0000000011111111);
-    /// # };
+    /// # });
     /// ```
     ///
     /// ```
-    /// # async {
+    /// # tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
     /// use std::io::Cursor;
     /// use tokio_bitstream_io::{LittleEndian, ByteReader, ByteRead};
     /// let data = [0b00000000, 0b11111111];
     /// let mut reader = ByteReader::endian(Cursor::new(&data), LittleEndian);
     /// assert_eq!(reader.read::<u16>().await.unwrap(), 0b1111111100000000);
-    /// # };
+    /// # });
     /// ```
     async fn read<N: Numeric>(&mut self) -> Result<N, io::Error>;
 
