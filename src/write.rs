@@ -306,7 +306,7 @@ impl<W: AsyncWrite + Unpin + Send + Sync, E: Endianness> BitWriter<W, E> {
 /// A trait for anything that can write a variable number of
 /// potentially un-aligned values to an output stream
 #[async_trait::async_trait]
-pub trait BitWrite: Send + Sync {
+pub trait BitWrite: Send {
     /// Writes a single bit to the stream.
     /// `true` indicates 1, `false` indicates 0
     ///
